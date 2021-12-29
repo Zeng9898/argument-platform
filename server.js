@@ -5,12 +5,12 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const xlsx = require('xlsx');
+const DiscussData = require("./models/discussData")
+const mongoose = require("mongoose")
 
-var corsOptions = {
-    origin: "http://localhost:8081"
-  };
-  
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: '*'
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,39 +28,53 @@ db.mongoose
   .catch(err => {
     console.log("Cannot connect to the database!", err);
     process.exit();
-});
+  });
 
 require("./routes/route.js")(app);
-const PORT = process.env.PORT || 8078;
+
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
+  res.sendFile(__dirname + '/index.html')
 });
 
 
-app.post('/', (req, res) =>{
-    if(req.files){
-        console.log(req.files);
-        var file = req.files.file;
-        var fileName = file.name;
-        console.log(fileName);
-        file.mv('./uploads/' + fileName, function(err){
-            if(err){
-                res.send(err);
-            }else{
-                res.send("File Uploaded");
-                const wb = xlsx.readFile("./uploads/" + fileName);
-                console.log(wb.SheetNames);
-                const ws = wb.Sheets['設定格式化的條件(前)'];
-                console.log(ws);
-                const data = xlsx.utils.sheet_to_json(ws);
-                console.log(data);
-            }
-        });
-    }
+app.post('/', (req, res) => {
+  if (req.files) {
+    console.log(req.files);
+    var file = req.files.file;
+    var fileName = file.name;
+    console.log(fileName);
+    file.mv('./uploads/' + fileName, function (err) { //把檔案移動到/uploads
+      if (err) {
+        res.send(err);
+      } else {
+        res.send("File Uploaded");
+        const wb = xlsx.readFile("./uploads/" + fileName); //讀取xlsx檔案
+        //console.log(wb.SheetNames);
+        const ws = wb.Sheets['設定格式化的條件(前)'];  //讀取workbook中的其中一個sheet
+        //console.log(ws);
+        const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
+        data.forEach((item) => {
+          const newData = new DiscussData({ //將每筆json存入discussData表
+            dataName: item.dataName
+          });
+          // newData.history.push({
+          //   userId:"testUserId",
+
+          // });
+          newData.save()
+            .then((value) => {
+              console.log(value)
+            })
+            .catch(value => console.log(value));
+        })
+      }
+    });
+  }
 });
 
 

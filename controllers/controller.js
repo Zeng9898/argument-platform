@@ -1,24 +1,24 @@
 const db = require("../models");
 const PickData = db.pickDatas;
+const mongoose = require('mongoose');
 
-// Create and Save a new Tutorial
-exports.create = (req, res) => {
+exports.create = (req, res) => { //標註用api
   // Validate request
   if (!req.body.dataName) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
-
+  console.log(req.body);
   // Create a Tutorial
   const pickData = new PickData({
-    userId: req.body.userId,
+    userId: mongoose.Types.ObjectId(req.body.userId),
     DDId: req.body.DDId,
     dataName: req.body.dataName,
     perspective: req.body.perspective,
     purpose: req.body.purpose
   });
 
-  // Save Tutorial in the database
+  // Save pickData in the database
   pickData
     .save(pickData)
     .then(data => {
