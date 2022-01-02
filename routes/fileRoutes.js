@@ -17,18 +17,18 @@ router.post('/', (req, res) => {
             if (err) {
                 res.send(err);
             } else {
-                UserProfile.findById(userId).then(
+                UserProfile.findById(userId).then( //找到目標使用者
                     user => {
-                        let FNId;
-                        let returnValue;
-                        user.files.push({
+                        let FNId; //紀錄存到db後的file id
+                        let returnValue; //紀錄要丟回前端的檔案資料
+                        user.files.push({ //把這些資料丟進files array
                             fileName: userFileName,
                             coCode: coCode,
                             codeSys: codeSys
                         })
-                        user.save().then((value) => {
+                        user.save().then((value) => { //儲存剛剛丟進去的東西
                             console.log(value)
-                            for (let i = 0; i < user.files.length; i++) {
+                            for (let i = 0; i < user.files.length; i++) { //找尋剛剛丟進去那筆檔案的file id
                                 if (user.files[i].fileName == userFileName) {
                                     FNId = user.files[i]._id;
                                     returnValue = user.files[i];
@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
                                 //   userId:"testUserId",
 
                                 // });
-                                newData.save()
+                                newData.save() //將每筆資料（一段話）存進discuss data collection
                                     .then((value) => {
                                         console.log(value)
                                     })
@@ -78,23 +78,25 @@ router.post('/', (req, res) => {
 
 
 router.delete('/', (req, res) => {
-    let userId = req.body.userId;
-    let fileName = req.body.fileName;
+    let userId = req.body.userId; //儲存使用者id
+    let fileName = req.body.fileName; //儲存檔名
+    //紀錄檔案路徑
     let filePath = "/Users/garyzseng/Desktop/project/expressPlusMongo/uploads/" + fileName;
+    //移除檔案
     fs.unlinkSync(filePath);
-    UserProfile.findById(userId).then(
+    UserProfile.findById(userId).then( //找到user資料
         user => {
             console.log(user);
             let index = -1;
             let FNId = -1;
-            for (let i = 0; i < user.files.length; i++) {
+            for (let i = 0; i < user.files.length; i++) { //找到要刪除的檔名的index同時紀錄FNId在之後刪除discussdata中的資料用的
                 if (user.files[i].fileName == fileName) {
                     index = i;
                     FNId = user.files[i]._id;
                 }
             }
-            user.files.splice(index, 1);
-            user.save().then(
+            user.files.splice(index, 1); //移除user.files裡頭的那筆資料
+            user.save().then( //儲存移除資料後的user
                 value => {
                     console.log(value)
                 })
@@ -102,7 +104,7 @@ router.delete('/', (req, res) => {
                     console.log(value)
                     return res.send({ error: value })
                 });
-            DiscussData.deleteMany({ FNId: FNId }).then(
+            DiscussData.deleteMany({ FNId: FNId }).then( //移除再discussdata中要刪除的資料
                 value => {
                     console.log(value);
                 })
