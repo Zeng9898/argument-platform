@@ -3,10 +3,6 @@ const express = require('express');
 const uploader = require('express-fileupload');
 const app = express();
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const xlsx = require('xlsx');
-const DiscussData = require("./models/discussData")
-const mongoose = require("mongoose")
 
 app.use(cors({
   origin: '*'
@@ -30,54 +26,70 @@ db.mongoose
     process.exit();
   });
 
-require("./routes/route.js")(app);
+const dataRouter = require("./routes/dataRoutes.js");
+const fileRouter = require("./routes/fileRoutes")
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 });
 
+// app.post('/', (req, res) => {
+//   const {userName} = req.body;
+//   const newUser = new UserProfile({
+//     userName:userName,
+//   });
+//   newUser.save()
+//     .then((value) => {
+//       console.log(value);
+//       res.send({ok:"ok"});
+//     })
+//     .catch(value => console.log(value));
+// });
 
-app.post('/', (req, res) => {
-  if (req.files) {
-    console.log(req.files);
-    var file = req.files.file;
-    var fileName = file.name;
-    console.log(fileName);
-    file.mv('./uploads/' + fileName, function (err) { //把檔案移動到/uploads
-      if (err) {
-        res.send(err);
-      } else {
-        res.send("File Uploaded");
-        const wb = xlsx.readFile("./uploads/" + fileName); //讀取xlsx檔案
-        //console.log(wb.SheetNames);
-        const ws = wb.Sheets['設定格式化的條件(前)'];  //讀取workbook中的其中一個sheet
-        //console.log(ws);
-        const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
-        data.forEach((item) => {
-          const newData = new DiscussData({ //將每筆json存入discussData表
-            dataName: item.dataName
-          });
-          // newData.history.push({
-          //   userId:"testUserId",
+// app.post('/', (req, res) => {
+//   if (req.files) {
+//     console.log(req.files);
+//     var file = req.files.file;
+//     var fileName = file.name;
+//     console.log(fileName);
+//     file.mv('./uploads/' + fileName, function (err) { //把檔案移動到/uploads
+//       if (err) {
+//         res.send(err);
+//       } else {
+//         res.send("File Uploaded");
+//         const wb = xlsx.readFile("./uploads/" + fileName); //讀取xlsx檔案
+//         //console.log(wb.SheetNames);
+//         const ws = wb.Sheets['設定格式化的條件(前)'];  //讀取workbook中的其中一個sheet
+//         //console.log(ws);
+//         const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
+//         data.forEach((item) => {
+//           const newData = new DiscussData({ //將每筆json存入discussData表
+//             dataName: item.dataName
+//           });
+//           // newData.history.push({
+//           //   userId:"testUserId",
 
-          // });
-          newData.save()
-            .then((value) => {
-              console.log(value)
-            })
-            .catch(value => console.log(value));
-        })
-      }
-    });
-  }
+//           // });
+//           newData.save()
+//             .then((value) => {
+//               console.log(value)
+//             })
+//             .catch(value => console.log(value));
+//         })
+//       }
+//     });
+//   }
+// });
+
+app.use("/file", fileRouter)
+app.use("/data", dataRouter)
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
 });
-
-
 // app.route("/upload_excel")
 //   .post(upload.any(), (req, res) => {
 //     // if (!req.files || req.files.length === 0) {

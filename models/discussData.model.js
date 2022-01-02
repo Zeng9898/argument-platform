@@ -37,6 +37,10 @@ const DiscussData = new Schema({
   history: {
     type: [History],
   },
+  date: {
+    type: Date,
+    default: Date.now,
+  }
 })
 
 module.exports = mongoose.model("DiscussData", DiscussData)
