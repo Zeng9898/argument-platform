@@ -3,6 +3,8 @@ const router = express.Router()
 const xlsx = require('xlsx');
 const DiscussData = require("../models/discussData.model")
 const UserProfile = require("../models/userProfile.model")
+const mongoose = require("mongoose")
+
 const fs = require("fs");
 
 
@@ -41,8 +43,16 @@ router.post('/', (req, res) => {
                             const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
                             data.forEach((item) => {
                                 const newData = new DiscussData({ //將每筆json存入discussData表
-                                    FNId: FNId,
-                                    dataName: item.dataName
+                                    FNId: mongoose.Types.ObjectId(FNId),
+                                    dataName: item.dataName,
+                                    history:[
+                                        {
+                                            userId: userId,
+                                            perspective: ['社會', '環保'],
+                                            purpose: ['提出疑問', '表達支持'],
+                                            version: ['1'],
+                                        }
+                                    ]
                                 });
                                 // newData.history.push({
                                 //   userId:"testUserId",

@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 
 const History = new Schema({
   userId: {
-    type: String,
+    type: ObjectId,
     default: "",
   },
   perspective: {
@@ -27,7 +27,7 @@ const History = new Schema({
 
 const DiscussData = new Schema({
   FNId: {
-    type: String,
+    type: ObjectId,
     default: "",
   },
   dataName: {
