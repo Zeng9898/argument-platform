@@ -1,11 +1,12 @@
-const pickDatas = require("../controllers/controller.js");
+const controller = require("../controllers/controller.js");
 const DiscussData = require("../models/discussData.model")
 const UserProfile = require("../models/userProfile.model")
 const express = require("express")
 const router = express.Router()
 
 // Create a new Tutorial
-router.post("/", pickDatas.create);
+router.post("/tagData", controller.tagData);
+router.get("/getFileData", controller.getFileData);
 
 router.get("/allContent", (req, res) => {
     const allContent = UserProfile.aggregate(
