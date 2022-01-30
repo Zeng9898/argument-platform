@@ -8,24 +8,7 @@ const router = express.Router()
 router.post("/tagData", controller.tagData);
 router.get("/getFileData", controller.getFileData);
 
-router.get("/allContent", (req, res) => {
-    const allContent = UserProfile.aggregate(
-        [
-            {
-                $lookup: {
-                    from: "DiscussData",
-                    localField: "files._id",
-                    foreignField: "FNId",
-                    as: "fileInfo"
-                }
-            }
-        ]
-    ).exec((err, data) => {
-        if (err) throw err;
-        res.send(data)
-    })
-
-});
+router.get("/allContent", controller.allContent);
 router.get("/test", (req, res) => {
     DisscussData.find()
     .then((data) => {

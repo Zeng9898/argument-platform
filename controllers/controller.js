@@ -1,6 +1,8 @@
 const db = require("../models");
 const mongoose = require('mongoose');
 const DiscussData = require("../models/discussData.model");
+const UserProfile = require("../models/userProfile.model")
+
 const { ObjectId } = require("bson");
 
 exports.tagData = (req, res) => { //標註用api
@@ -17,7 +19,7 @@ exports.tagData = (req, res) => { //標註用api
       const { perspective, purpose, version } = req.body.history;
       //console.log(userId, perspective, purpose, version);
       data.FNId = mongoose.Types.ObjectId(data.FNId);
-      for(var i = 0; i < data.history.length; i++)
+      for (var i = 0; i < data.history.length; i++)
         data.history[i].userId = mongoose.Types.ObjectId(data.history[i].userId)
       userId = mongoose.Types.ObjectId(userId);
       data.history.push({ //把這些資料丟進files array
@@ -79,7 +81,71 @@ exports.getFileData = (req, res) => {
 };
 
 // Retrieve all Tutorials from the database.
-exports.findAll = (req, res) => {
+exports.allContent = (req, res) => {
+  allContent = [];
+  var fileName;
+  var dataName;
+  var perspective;
+  var purpose;
+  var FNId;
+  UserProfile.find().then(
+    user => {
+      console.log(user[0]);
+      user[0].files.forEach((file) => {
+        fileName = file.fileName;
+        FNId = file._id;
+        console.log(fileName, FNId)
+        DiscussData.find({ FNId: FNId }).then(
+          data => {
+            data.forEach((content) => {
+              dataName = content.dataName;
+              content.history.forEach((tag) => {
+                perspective = tag.perspective;
+                purpose = tag.purpose;
+                allContent.push({
+                  fileName: fileName,
+                  dataName: dataName,
+                  perspective: perspective,
+                  purpose: purpose
+                });
+              })
+              //console.log(dataName, perspective, purpose);
+            })
+          }
+        ).catch(
+          err => {
+            res.status(500).send({
+              UserProfile: err || "Some error occurred while retrieving user."
+            });
+          }
+        )
+      });
+      setTimeout(function(){console.log(allContent)}, 3000);
+      res.send(user[0])
+    }
+  ).catch(
+    err => {
+      res.status(500).send({
+        UserProfile: err || "Some error occurred while retrieving user."
+      });
+    }
+
+  );
+  // const allContent = UserProfile.aggregate(
+  //   [
+  //     {
+  //       $lookup: {
+  //         from: "DiscussData",
+  //         localField: "files._id",
+  //         foreignField: "FNId",
+  //         as: "fileInfo"
+  //       }
+  //     }
+  //   ]
+  // ).exec((err, data) => {
+  //   if (err) throw err;
+  //   res.send(data)
+  // })
 
 };
 

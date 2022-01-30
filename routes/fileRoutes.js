@@ -7,7 +7,18 @@ const mongoose = require("mongoose")
 
 const fs = require("fs");
 
-
+router.get('/reset', (req, res) => {
+    UserProfile.findById("61cd8404c5f3234a331e3ac4").then(
+        user => {
+            user.files = [];
+            user.save();
+        }
+    ).catch((err) => {
+        return res.status(500).send({
+            user: err || "Some error occurred while retrieving users.",
+        });
+    })
+});
 
 router.post('/', (req, res) => {
     const { userId, userFileName, codeSys, coCode } = req.body;
