@@ -13,15 +13,20 @@ exports.tagData = (req, res) => { //標註用api
   DiscussData.findById(req.body._id)
     .then((data) => {
       console.log("data", data);
-      const {userId, perspective, purpose, version} = req.body.history;
-      data.FNId = ObjectId(data.FNId);
-      userId = ObjectId(userId);
+      var userId = req.body.history.userId;
+      const { perspective, purpose, version } = req.body.history;
+      //console.log(userId, perspective, purpose, version);
+      data.FNId = mongoose.Types.ObjectId(data.FNId);
+      for(var i = 0; i < data.history.length; i++)
+        data.history[i].userId = mongoose.Types.ObjectId(data.history[i].userId)
+      userId = mongoose.Types.ObjectId(userId);
       data.history.push({ //把這些資料丟進files array
         userId: userId,
         perspective: perspective,
         purpose: purpose,
         version: version
       })
+      console.log(data);
       data.save()
         .then((value) => {
           console.log(value)
