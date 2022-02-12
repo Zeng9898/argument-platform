@@ -89,7 +89,7 @@ exports.allContent = (req, res) => {
   var purpose;
   var FNId;
   UserProfile.find().then(
-    user => {
+    (user) => {
       console.log(user[0]);
       user[0].files.forEach((file) => {
         fileName = file.fileName;
@@ -120,8 +120,11 @@ exports.allContent = (req, res) => {
           }
         )
       });
-      setTimeout(function(){console.log(allContent)}, 3000);
-      res.send(user[0])
+      setTimeout(function(){
+        console.log(allContent)
+        res.send(allContent)
+      }, 3000);
+      
     }
   ).catch(
     err => {

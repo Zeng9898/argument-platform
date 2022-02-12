@@ -3,10 +3,33 @@ const express = require('express');
 const uploader = require('express-fileupload');
 const app = express();
 const cors = require('cors');
+const session = require('express-session')
+const { authenticator } = require('./middleware/auth')
+
+app.use(session({
+  secret: 'ThisIsMySecret',
+  resave: false,
+  saveUninitialized: true
+}))
 
 app.use(cors({
   origin: '*'
 }));
+
+// 載入設定檔，要寫在 express-session 以後
+const usePassport = require('./config/passport')
+// 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
+usePassport(app)
+
+// 放在 UsePassport(app)後面
+app.use((req, res, next) => {
+  // 把 req.isAuthenticated() 回傳的布林值，交接給 res 使用
+  res.locals.isAuthenticated = req.isAuthenticated() 
+  // 反序列化時取得的 user 資訊
+  console.log(res.locals.isAuthenticated);
+  res.locals.user = req.user
+  next()
+})
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,10 +51,11 @@ db.mongoose
 
 const dataRouter = require("./routes/dataRoutes.js");
 const fileRouter = require("./routes/fileRoutes")
+const userRouter = require("./routes/userRoutes")
 
 
 
-app.get('/', (req, res) => {
+app.get('/', authenticator,(req, res) => {
   res.sendFile(__dirname + '/index.html')
 });
 
@@ -85,6 +109,7 @@ app.get('/', (req, res) => {
 
 app.use("/file", fileRouter)
 app.use("/data", dataRouter)
+app.use("/user", userRouter)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
