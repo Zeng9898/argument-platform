@@ -6,15 +6,17 @@ const cors = require('cors');
 const session = require('express-session')
 const { authenticator } = require('./middleware/auth')
 
+app.use(cors({
+  origin: '*'
+}));
+
 app.use(session({
   secret: 'ThisIsMySecret',
   resave: false,
   saveUninitialized: true
 }))
 
-app.use(cors({
-  origin: '*'
-}));
+
 
 // 載入設定檔，要寫在 express-session 以後
 const usePassport = require('./config/passport')

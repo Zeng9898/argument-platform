@@ -25,6 +25,7 @@ router.post('/login', passport.authenticate('local'),
             userInfo: req.user
         })
     })
+    
 // 登出 GET 路由
 router.get('/logout', (req, res) => {
     req.logout()
@@ -49,7 +50,7 @@ router.post('/register', (req, res) => {
                 account,
                 password
             })
-                .then(() => res.redirect('/user/login'))
+                .then(() => res.send('register successfully'))
                 .catch(err => console.log(err))
         }
     })
