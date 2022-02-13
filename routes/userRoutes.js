@@ -25,7 +25,7 @@ router.post('/login', passport.authenticate('local'),
             userInfo: req.user
         })
     })
-    
+
 // 登出 GET 路由
 router.get('/logout', (req, res) => {
     req.logout()
@@ -41,7 +41,7 @@ router.post('/register', (req, res) => {
         // 如果已經註冊：退回原本畫面
         if (user) {
             console.log('這個信箱已經被註冊過了')
-            res.send("註冊過了！")
+            res.status(401).send('Unauthorized')
         } else {
             // 如果還沒註冊：寫入資料庫
             return User.create({
