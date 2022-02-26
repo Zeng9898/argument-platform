@@ -4,21 +4,42 @@ const xlsx = require('xlsx');
 const DiscussData = require("../models/discussData.model")
 const UserProfile = require("../models/userProfile.model")
 const File = require("../models/file.model")
+const CodeSys = require("../models/codeSys.model")
 
 const fs = require("fs");
 
-router.get('/reset', (req, res) => {
-    UserProfile.findById("61cd8404c5f3234a331e3ac4").then(
-        user => {
-            user.files = [];
-            user.save();
+router.get('/allFile/:userId', (req, res) => {
+    const userId = req.params.userId
+    File.find({ userId: userId }).then(
+        file => {
+            res.send(file);
         }
     ).catch((err) => {
         return res.status(500).send({
-            user: err || "Some error occurred while retrieving users.",
+            file: err || "Some error occurred while retrieving files.",
         });
     })
 });
+
+router.post('/codeSystem', (req, res) => {
+    const { userId, codeName, purpose, code, source } = req.body;
+    const newCodeSys = new CodeSys({
+        userId: userId,
+        codeName: codeName,
+        purpose: purpose,
+        code: code,
+        source: source
+    });
+    newCodeSys.save()
+        .then((value) => {
+            console.log(value)
+            res.send({ success: "create code system successfully" })
+            //File.findById()
+        }).catch(value => {
+            console.log(value)
+            res.send({ error: value })
+        });
+})
 
 router.post('/', (req, res) => {
     const { userId, fileName, collector, sourceTarget,
@@ -50,6 +71,7 @@ router.post('/', (req, res) => {
                         console.log("3")
                         console.log(value)
                         res.send({ success: "create file successfully" })
+                        //File.findById()
                     }).catch(value => {
                         console.log("4")
                         console.log(value)
