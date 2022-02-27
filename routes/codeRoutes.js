@@ -47,6 +47,42 @@ router.post('/encodeTask', (req, res) => {
         });
 })
 
+router.post('/encodeTask', (req, res) => {
+    const { userId, fileId, startTime, endTime, status, creator} = req.body;
+    const coCode = Math.floor(Math.random() * 100000);
+    const newEncodeTask = new EncodeTask({
+        userId: userId,
+        fileId: fileId,
+        startTime: startTime,
+        endTime: endTime,
+        status: status,
+        coCode: coCode,
+        creator: creator
+    });
+    newEncodeTask.save()
+        .then((value) => {
+            console.log(value)
+            res.send({ success: "create encode task successfully" })
+            //File.findById()
+        }).catch(value => {
+            console.log(value)
+            res.send({ error: value })
+        });
+})
+
+router.get('/allEncodeTask/:userId', (req, res) => {
+    const userId = req.params.userId
+    EncodeTask.find({ userId: userId }).then(
+        EncodeTask => {
+            res.send(EncodeTask);
+        }
+    ).catch((err) => {
+        return res.status(500).send({
+            encodeTask: err || "Some error occurred while retrieving encodeTasks.",
+        });
+    })
+});
+
 
 
 module.exports = router;
