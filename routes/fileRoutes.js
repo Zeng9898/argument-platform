@@ -21,25 +21,8 @@ router.get('/allFile/:userId', (req, res) => {
     })
 });
 
-router.post('/codeSystem', (req, res) => {
-    const { userId, codeName, purpose, code, source } = req.body;
-    const newCodeSys = new CodeSys({
-        userId: userId,
-        codeName: codeName,
-        purpose: purpose,
-        code: code,
-        source: source
-    });
-    newCodeSys.save()
-        .then((value) => {
-            console.log(value)
-            res.send({ success: "create code system successfully" })
-            //File.findById()
-        }).catch(value => {
-            console.log(value)
-            res.send({ error: value })
-        });
-})
+
+
 
 router.post('/', (req, res) => {
     const { userId, fileName, collector, sourceTarget,

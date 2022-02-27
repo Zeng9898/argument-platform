@@ -54,6 +54,7 @@ db.mongoose
 const dataRouter = require("./routes/dataRoutes.js");
 const fileRouter = require("./routes/fileRoutes")
 const userRouter = require("./routes/userRoutes")
+const codeRouter = require("./routes/codeRoutes")
 
 
 
@@ -112,6 +113,7 @@ app.get('/', authenticator,(req, res) => {
 app.use("/file", fileRouter)
 app.use("/data", dataRouter)
 app.use("/user", userRouter)
+app.use("/code", codeRouter)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
