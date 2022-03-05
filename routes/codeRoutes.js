@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const CodeSys = require("../models/codeSys.model")
 const EncodeTask = require("../models/encodeTask.model")
+const File = require("../models/file.model")
 
 
 router.post('/codeSystem', (req, res) => {
@@ -74,7 +75,19 @@ router.get('/allEncodeTask/:userId', (req, res) => {
     const userId = req.params.userId
     EncodeTask.find({ userId: userId }).then(
         EncodeTask => {
-            res.send(EncodeTask);
+            EncodeTask.forEach(task => {
+                File.findById(task.fileId).then(
+                    file => {
+                        console.log(file.fileName)
+                        task.fileName = "file.fileName";
+                        console.log(task)
+                    }
+                )
+            })
+            setTimeout(function(){
+                res.send(EncodeTask);
+            }, 1000)
+            
         }
     ).catch((err) => {
         return res.status(500).send({
