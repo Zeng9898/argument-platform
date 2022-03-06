@@ -2,7 +2,7 @@ const db = require("../models");
 const mongoose = require('mongoose');
 const DiscussData = require("../models/discussData.model");
 const UserProfile = require("../models/userProfile.model")
-
+const File = require("../models/file.model")
 const { ObjectId } = require("bson");
 
 exports.tagData = (req, res) => { //標註用api
@@ -120,11 +120,11 @@ exports.allContent = (req, res) => {
           }
         )
       });
-      setTimeout(function(){
+      setTimeout(function () {
         console.log(allContent)
         res.send(allContent)
       }, 3000);
-      
+
     }
   ).catch(
     err => {
@@ -152,6 +152,27 @@ exports.allContent = (req, res) => {
 
 };
 
+function start(EncodeTask){
+  return appendFileName(EncodeTask);
+}
+
+async function appendFileName(EncodeTask){
+  EncodeTask.forEach(task => {
+    File.findById(task.fileId).then(
+      file => {
+        task.status = task.status + file.fileName;
+        console.log(task);
+      }
+    ).catch((err) => {
+      return res.status(500).send({
+        File: err || "Some error occurred while retrieving files.",
+      });
+    })
+  })
+  return EncodeTask;
+};
+
+module.exports.appendFileName = appendFileName;
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
 

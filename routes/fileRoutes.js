@@ -37,6 +37,7 @@ router.post('/', (req, res) => {
                 console.log(err)
                 res.send(err);
             } else {
+                let fileId;
                 console.log("2")
                 const newFile = new File({
                     userId: userId,
@@ -53,13 +54,37 @@ router.post('/', (req, res) => {
                     .then((value) => {
                         console.log("3")
                         console.log(value)
-                        res.send({ success: "create file successfully" })
+                        fileId = value._id;
+                        const wb = xlsx.readFile("./uploads/" + fileName); //讀取xlsx檔案
+                            //console.log(wb.SheetNames);
+                            const ws = wb.Sheets[wb.SheetNames[1]];  //讀取workbook中的其中一個sheet
+                            //console.log(ws);
+                            const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
+                            data.forEach((content) => {
+                                const newData = new DiscussData({ //將每筆json存入discussData表
+                                    fileId: mongoose.Types.ObjectId(fileId),
+                                    content: content,
+                                });
+                                // newData.history.push({
+                                //   userId:"testUserId",
+
+                                // });
+                                newData.save() //將每筆資料（一段話）存進discuss data collection
+                                    .then((value) => {
+                                        console.log(value)
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                        return res.status(500).send(err)
+                                    });
+                            })
                         //File.findById()
                     }).catch(value => {
                         console.log("4")
                         console.log(value)
                         res.send({ error: value })
                     });
+                
                 // UserProfile.findById(userId).then( //找到目標使用者
                 //     user => {
                 //         let FNId; //紀錄存到db後的file id
@@ -78,7 +103,7 @@ router.post('/', (req, res) => {
                 //                 }
                 //             }
                 //             const wb = xlsx.readFile("./uploads/" + userFileName); //讀取xlsx檔案
-                //             console.log(wb.SheetNames);
+                //             //console.log(wb.SheetNames);
                 //             const ws = wb.Sheets[wb.SheetNames[1]];  //讀取workbook中的其中一個sheet
                 //             //console.log(ws);
                 //             const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json

@@ -7,15 +7,11 @@ const History = new Schema({
     type: ObjectId,
     default: "",
   },
-  perspective: {
-    type: Array,
+  encodeTaskId: {
+    type: ObjectId,
     default: "",
   },
-  purpose: {
-    type: Array,
-    default: "",
-  },
-  version: {
+  code: {
     type: Array,
     default: "",
   },
@@ -26,11 +22,11 @@ const History = new Schema({
 })
 
 const DiscussData = new Schema({
-  FNId: {
+  fileId: {
     type: ObjectId,
     default: "",
   },
-  dataName: {
+  content: {
     type: String,
     default: "",
   },
