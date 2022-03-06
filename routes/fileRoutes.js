@@ -5,6 +5,7 @@ const DiscussData = require("../models/discussData.model")
 const UserProfile = require("../models/userProfile.model")
 const File = require("../models/file.model")
 const CodeSys = require("../models/codeSys.model")
+const mongoose = require('mongoose');
 
 const fs = require("fs");
 
@@ -63,7 +64,7 @@ router.post('/', (req, res) => {
                             data.forEach((content) => {
                                 const newData = new DiscussData({ //將每筆json存入discussData表
                                     fileId: mongoose.Types.ObjectId(fileId),
-                                    content: content,
+                                    content: content.dataName,
                                 });
                                 // newData.history.push({
                                 //   userId:"testUserId",
