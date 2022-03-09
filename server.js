@@ -57,7 +57,6 @@ const userRouter = require("./routes/userRoutes")
 const codeRouter = require("./routes/codeRoutes")
 
 
-
 app.get('/', authenticator,(req, res) => {
   res.sendFile(__dirname + '/index.html')
 });

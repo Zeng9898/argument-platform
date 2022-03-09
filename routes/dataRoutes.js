@@ -4,23 +4,34 @@ const UserProfile = require("../models/userProfile.model")
 const express = require("express")
 const router = express.Router()
 
+router.get('/userData', async (req, res) => {
+  const { userId, fileId, encodeTaskId } = req.body;
+  DiscussData.find({ fileId: fileId }).then(
+    data => {
+      data.forEach(item => {
+        item.history.filter(record => record.userId == userId && record.encodeTaskId == encodeTaskId);
+      })
+      console.log(data.history);
+    }
+  )
+})
 // Create a new Tutorial
-router.post("/tagData", controller.tagData);
-router.get("/getFileData", controller.getFileData);
+// router.post("/tagData", controller.tagData);
+// router.get("/getFileData", controller.getFileData);
 
-router.get("/allContent", controller.allContent);
-router.get("/test", (req, res) => {
-    DisscussData.find()
-    .then((data) => {
-      console.log(data);
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        restaurant: err.restaurant || "Some error occurred while retrieving restaurants.",
-      });
-    })
-});
+// router.get("/allContent", controller.allContent);
+// router.get("/test", (req, res) => {
+//     DisscussData.find()
+//     .then((data) => {
+//       console.log(data);
+//       res.send(data);
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         restaurant: err.restaurant || "Some error occurred while retrieving restaurants.",
+//       });
+//     })
+// });
 // // Retrieve all Tutorials
 // router.get("/", tutorials.findAll);
 

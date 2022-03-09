@@ -2,7 +2,6 @@ const express = require("express")
 const router = express.Router()
 const CodeSys = require("../models/codeSys.model")
 const EncodeTask = require("../models/encodeTask.model")
-const File = require("../models/file.model")
 const DiscussData = require("../models/discussData.model")
 const mongoose = require('mongoose');
 
@@ -84,33 +83,43 @@ router.post('/tag', (req, res) => {
 
 })
 
-router.get('/allEncodeTask/:userId', (req, res) => {
+router.get('/allEncodeTask/:userId', async (req, res) => {
     const userId = req.params.userId
-    EncodeTask.find({ userId: userId }).then(
-        EncodeTask => {
-            EncodeTask.forEach(task => {
-                File.findById(task.fileId).then(
-                    file => {
-                        task.status = task.status + file.fileName;
-                        console.log(task);
-                    }
-                ).catch((err) => {
-                    return res.status(500).send({
-                        File: err || "Some error occurred while retrieving files.",
-                    });
-                })
-            })
-            setTimeout(function () {
-                res.send(EncodeTask);
-            }, 1000);
+    const EncodeTaskInfo = await EncodeTask.aggregate([
+        {
+            $match:
+            {
+                "userId": mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup:
+            {
+                from: 'files',
+                localField: 'fileId',
+                foreignField: '_id',
+                as: 'fileDetails'
+            }
         }
-    ).catch((err) => {
-        return res.status(500).send({
-            encodeTask: err || "Some error occurred while retrieving encodeTasks.",
-        });
-    })
+    ]);
+    res.send(EncodeTaskInfo)
 });
 
+router.get('/codeSystem/:userId', async (req, res) => {
+    const userId = req.params.userId
+    CodeSys.find({ userId: userId }).then(
+        code => {
+            console.log(code);
+            res.send(code);
+        }
+    ).catch(
+        err => {
+            res.status(500).send({
+                CodeSys: err || "Some error occur while retrieving codesys."
+            })
+        }
+    )
 
+});
 
 module.exports = router;
