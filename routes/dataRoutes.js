@@ -10,8 +10,9 @@ router.get('/userData', async (req, res) => {
     data => {
       data.forEach(item => {
         item.history.filter(record => record.userId == userId && record.encodeTaskId == encodeTaskId);
+        console.log(item.history);
       })
-      console.log(data.history);
+      console.log(data)
     }
   )
 })

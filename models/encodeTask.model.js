@@ -8,6 +8,10 @@ const EncodeTask = new Schema({
     type: ObjectId,
     required: true
   },
+  codeSysId: {
+    type: ObjectId,
+    required: true
+  },
   fileId: {
     type: ObjectId,
     required: true

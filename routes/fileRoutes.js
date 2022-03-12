@@ -79,6 +79,7 @@ router.post('/', (req, res) => {
                                         return res.status(500).send(err)
                                     });
                             })
+                            res.send({success:"success upload file"});
                         //File.findById()
                     }).catch(value => {
                         console.log("4")
