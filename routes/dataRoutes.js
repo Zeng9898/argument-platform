@@ -9,10 +9,9 @@ router.get('/userData', async (req, res) => {
   DiscussData.find({ fileId: fileId }).then(
     data => {
       data.forEach(item => {
-        item.history.filter(record => record.userId == userId && record.encodeTaskId == encodeTaskId);
-        console.log(item.history);
+        item.history = item.history.filter(record => record.userId == userId && record.encodeTaskId == encodeTaskId);
       })
-      console.log(data)
+      res.send(data);
     }
   )
 })

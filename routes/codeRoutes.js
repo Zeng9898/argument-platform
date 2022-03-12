@@ -83,7 +83,6 @@ router.post('/tag', (req, res) => {
                 console.log("new")
                 data.fileId = mongoose.Types.ObjectId(data.fileId)
                 data.history.push(record);
-                console.log(data.history[0].userId);
                 data.history.forEach(item => {
                     item.userId = mongoose.Types.ObjectId(item.userId)
                     item.encodeTaskId = mongoose.Types.ObjectId(item.encodeTaskId)
