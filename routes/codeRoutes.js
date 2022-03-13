@@ -154,4 +154,29 @@ router.get('/codeSystem/:userId', async (req, res) => {
 
 });
 
+router.post('/adjustTask', (req, res) => {
+    const { encodeTaskId, adjustDate } = req.body;
+    EncodeTask.findById(encodeTaskId).then(
+        encodeTask => {
+            encodeTask.status = "3";
+            encodeTask.adjustDate = adjustDate;
+            encodeTask.save().then(
+                task => {
+                    res.send(task);
+                }
+            ).catch(
+                err => {
+                    res.status(500).send({
+                        EncodeTask: err || "Some err occur while saving encode task"
+                    })     
+                }
+            )
+    }).catch(
+        err => {
+            res.status(500).send({
+                EncodeTask: err || "Some err occur while retrieving encode task"
+            })
+    })
+})
+
 module.exports = router;

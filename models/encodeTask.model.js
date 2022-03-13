@@ -32,6 +32,9 @@ const EncodeTask = new Schema({
     type: Number,
     required: true
   },
+  adjustDate: {
+    type: Date,
+  },
   creator: {
     type: Boolean,
     required: true
