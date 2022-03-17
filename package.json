@@ -12,6 +12,7 @@
     "body-parser": "^1.19.0",
     "convert-excel-to-json": "^1.7.0",
     "cors": "^2.8.5",
+    "excel4node": "^1.7.2",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "express-session": "^1.17.2",

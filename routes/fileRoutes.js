@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const xlsx = require('xlsx');
+const xl = require('excel4node');
 const DiscussData = require("../models/discussData.model")
 const UserProfile = require("../models/userProfile.model")
 const File = require("../models/file.model")
@@ -57,36 +58,36 @@ router.post('/', (req, res) => {
                         console.log(value)
                         fileId = value._id;
                         const wb = xlsx.readFile("./uploads/" + fileName); //讀取xlsx檔案
-                            //console.log(wb.SheetNames);
-                            const ws = wb.Sheets[wb.SheetNames[1]];  //讀取workbook中的其中一個sheet
-                            //console.log(ws);
-                            const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
-                            data.forEach((content) => {
-                                const newData = new DiscussData({ //將每筆json存入discussData表
-                                    fileId: mongoose.Types.ObjectId(fileId),
-                                    content: content.dataName,
-                                });
-                                // newData.history.push({
-                                //   userId:"testUserId",
+                        //console.log(wb.SheetNames);
+                        const ws = wb.Sheets[wb.SheetNames[1]];  //讀取workbook中的其中一個sheet
+                        //console.log(ws);
+                        const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
+                        data.forEach((content) => {
+                            const newData = new DiscussData({ //將每筆json存入discussData表
+                                fileId: mongoose.Types.ObjectId(fileId),
+                                content: content.dataName,
+                            });
+                            // newData.history.push({
+                            //   userId:"testUserId",
 
-                                // });
-                                newData.save() //將每筆資料（一段話）存進discuss data collection
-                                    .then((value) => {
-                                        console.log(value)
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
-                                        return res.status(500).send(err)
-                                    });
-                            })
-                            res.send({success:"success upload file"});
+                            // });
+                            newData.save() //將每筆資料（一段話）存進discuss data collection
+                                .then((value) => {
+                                    console.log(value)
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    return res.status(500).send(err)
+                                });
+                        })
+                        res.send({ success: "success upload file" });
                         //File.findById()
                     }).catch(value => {
                         console.log("4")
                         console.log(value)
                         res.send({ error: value })
                     });
-                
+
                 // UserProfile.findById(userId).then( //找到目標使用者
                 //     user => {
                 //         let FNId; //紀錄存到db後的file id
@@ -154,6 +155,22 @@ router.post('/', (req, res) => {
     }
 });
 
+router.get('/', (req, res) => {
+    console.log("in download excel")
+    const wb = new xl.Workbook();
+    const ws = wb.addWorksheet('Worksheet Name');
+    const headingColumnNames = [
+        "Content",
+        "A編碼者",
+        "B編碼者",
+    ];
+    let headingColumnIndex = 1;
+    headingColumnNames.forEach(heading => {
+        ws.cell(1, headingColumnIndex++)
+            .string(heading)
+    });
+    wb.write('data.xlsx', res);
+});
 
 router.delete('/', (req, res) => {
     let userId = req.body.userId; //儲存使用者id

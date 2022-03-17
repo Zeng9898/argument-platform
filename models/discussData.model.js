@@ -21,6 +21,21 @@ const History = new Schema({
   }
 })
 
+const Result = new Schema({
+  encodeTaskId: {
+    type: ObjectId,
+    default: "",
+  },
+  code: {
+    type: Array,
+    default: "",
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  }
+})
+
 const DiscussData = new Schema({
   fileId: {
     type: ObjectId,
@@ -32,6 +47,9 @@ const DiscussData = new Schema({
   },
   history: {
     type: [History],
+  },
+  result: {
+    type: [Result],
   },
   date: {
     type: Date,

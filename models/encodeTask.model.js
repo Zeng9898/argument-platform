@@ -32,6 +32,9 @@ const EncodeTask = new Schema({
     type: Number,
     required: true
   },
+  coCoder: {
+    type: ObjectId,
+  },
   adjustDate: {
     type: Date,
   },

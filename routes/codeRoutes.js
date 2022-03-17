@@ -112,7 +112,8 @@ router.get('/allEncodeTask/:userId', async (req, res) => {
         {
             $match:
             {
-                "userId": mongoose.Types.ObjectId(userId)
+                //"userId": mongoose.Types.ObjectId(userId)
+                $or: [{ "userId": mongoose.Types.ObjectId(userId) }, { "coCoder": mongoose.Types.ObjectId(userId) }]
             }
         },
         {
@@ -168,15 +169,102 @@ router.post('/adjustTask', (req, res) => {
                 err => {
                     res.status(500).send({
                         EncodeTask: err || "Some err occur while saving encode task"
-                    })     
+                    })
                 }
             )
-    }).catch(
-        err => {
-            res.status(500).send({
-                EncodeTask: err || "Some err occur while retrieving encode task"
+        }).catch(
+            err => {
+                res.status(500).send({
+                    EncodeTask: err || "Some err occur while retrieving encode task"
+                })
             })
-    })
 })
 
+router.post('/coTag', (req, res) => {
+    const { dataId, encodeTaskId, code } = req.body;
+    const record = {
+        encodeTaskId: mongoose.Types.ObjectId(encodeTaskId),
+        code: code
+    }
+    DiscussData.findById(mongoose.Types.ObjectId(dataId)).then(
+        data => {
+            var index = data.result.findIndex(x => x.encodeTaskId.equals(mongoose.Types.ObjectId(encodeTaskId)))
+            if (index != -1) {
+                console.log("exist")
+                data.fileId = mongoose.Types.ObjectId(data.fileId);
+                data.history[index] = record;
+                data.history.forEach(item => {
+                    item.userId = mongoose.Types.ObjectId(item.userId)
+                    item.encodeTaskId = mongoose.Types.ObjectId(item.encodeTaskId)
+                })
+                data.save().then(
+                    result => {
+                        res.send(result)
+                    }
+                ).catch(err => {
+                    return res.status(500).send({
+                        DiscussData: err || "Some error occur when saving discussdata!"
+                    })
+                })
+            } else {
+                console.log("new")
+                data.fileId = mongoose.Types.ObjectId(data.fileId)
+                data.history.forEach(item => {
+                    item.userId = mongoose.Types.ObjectId(item.userId)
+                    item.encodeTaskId = mongoose.Types.ObjectId(item.encodeTaskId)
+                })
+                data.result.push(record);
+                data.result.forEach(item => {
+                    item.encodeTaskId = mongoose.Types.ObjectId(item.encodeTaskId)
+                })
+                data.save().then(
+                    data => {
+                        res.send(data)
+                    }
+                ).catch((err) => {
+                    return res.status(500).send({
+                        data: err || "Some error occurred while tagging data.",
+                    });
+                })
+            }
+        }
+    ).catch((err) => {
+        return res.status(500).send({
+            DiscussData: err || "Some error occurred while retrieving DiscussData.",
+        });
+    })
+
+})
+
+router.post('/coCoder', (req, res) => {
+    const { userId, coCode } = req.body;
+    EncodeTask.find({ coCode: coCode }).then(
+        encodeTask => {
+            console.log(encodeTask);
+            if (encodeTask.length === 0) {
+                res.send({ message: "no such encode task" });
+            } else {
+                encodeTask[0].coCoder = mongoose.Types.ObjectId(userId);
+                console.log(encodeTask);
+                encodeTask[0].save().then(
+                    data => {
+                        res.send(data)
+                    }
+                ).catch((err) => {
+                    console.log(err)
+                    return res.status(500).send({
+                        EncodeTask: err || "Some error occurred while saving encode task.",
+                    });
+                })
+            }
+        }
+    ).catch(
+        err => {
+            console.log(err)
+            res.status(500).send({
+                EncodeTask: err || "Some error occur while retrieving encodeTasks."
+            })
+        }
+    )
+});
 module.exports = router;
