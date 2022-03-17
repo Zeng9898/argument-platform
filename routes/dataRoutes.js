@@ -18,14 +18,15 @@ router.get('/userData', async (req, res) => {
 
 router.get('/adjustData', async (req, res) => {
   const { encodeTaskId, fileId } = req.body;
-  DiscussData.find({ fileId: fileId }).then(
-    data => {
-      data.forEach(item => {
-        item.history = item.history.filter(record => record.encodeTaskId == encodeTaskId);
-      })
-      res.send(data);
-    }
-  )
+  
+  // DiscussData.find({ fileId: fileId }).then(
+  //   data => {
+  //     data.forEach(item => {
+  //       item.history = item.history.filter(record => record.encodeTaskId == encodeTaskId);
+  //     })
+  //     res.send(data);
+  //   }
+  // )
 })
 // Create a new Tutorial
 // router.post("/tagData", controller.tagData);
