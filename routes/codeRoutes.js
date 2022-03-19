@@ -158,27 +158,130 @@ router.get('/codeSystem/:userId', async (req, res) => {
 router.post('/adjustTask', (req, res) => {
     const { encodeTaskId, adjustDate } = req.body;
     EncodeTask.findById(encodeTaskId).then(
-        encodeTask => {
-            encodeTask.status = "3";
-            encodeTask.adjustDate = adjustDate;
-            encodeTask.save().then(
-                task => {
-                    res.send(task);
-                }
-            ).catch(
-                err => {
-                    res.status(500).send({
-                        EncodeTask: err || "Some err occur while saving encode task"
+        async (encodeTask) => {
+            if (encodeTask.coCoder == "") {
+
+            } else {
+                encodeTask.status = "3";
+                encodeTask.adjustDate = adjustDate;
+                const discussData = await DiscussData.aggregate([
+                    {
+                        $match:
+                        {
+                            //'history.'
+                            "fileId": mongoose.Types.ObjectId(encodeTask.fileId)
+                            //$or: [{ "userId": mongoose.Types.ObjectId(userId) }, { "coCoder": mongoose.Types.ObjectId(userId) }]
+                        }
+                    },
+                    // {
+                    //     "$unwind":
+                    //     {
+                    //         "path": "$history",
+                    //         "preserveNullAndEmptyArrays": true
+                    //     }
+                    // },
+                    // {
+                    //     $match:
+                    //     {
+                    //         //'history.'
+                    //         "history.encodeTaskId": mongoose.Types.ObjectId(encodeTaskId)
+                    //         //$or: [{ "userId": mongoose.Types.ObjectId(userId) }, { "coCoder": mongoose.Types.ObjectId(userId) }]
+                    //     }
+                    // },
+                    // {
+                    //     $lookup:
+                    //     {
+                    //         from: 'users',
+                    //         localField: 'history.userId',
+                    //         foreignField: '_id',
+                    //         as: 'userDetails'
+                    //     }
+                    // }
+                ]);
+                discussData.forEach(async (eachData) => {
+                    console.log(eachData.content);
+                    let data = await findData(eachData._id);
+                    let count = data.history.filter(eachLog => eachLog.encodeTaskId.equals(encodeTaskId))
+                    if (count.length == 0) {
+                        const aId = encodeTask.userId;
+                        const bId = encodeTask.coCoder;
+                        let aRecord = {
+                            userId: aId,
+                            encodeTaskId: encodeTaskId,
+                            code: [""]
+                        }
+                        let bRecord = {
+                            userId: bId,
+                            encodeTaskId: encodeTaskId,
+                            code: [""]
+                        }
+                        data.history.push(aRecord);
+                        data.history.push(bRecord);
+                    } else if (count.length == 1) {
+                        const aId = encodeTask.userId;
+                        const bId = encodeTask.coCoder;
+                        if (count[0].userId.equals(aId)) {
+                            let record = {
+                                userId: bId,
+                                encodeTaskId: encodeTaskId,
+                                code: [""]
+                            }
+                            data.history.push(record);
+                        } else if (count[0].userId.equals(bId)) {
+                            let record = {
+                                userId: aId,
+                                encodeTaskId: encodeTaskId,
+                                code: [""]
+                            }
+                            data.history.push(record);
+                        }
+        
+                    }
+                    if(data.result.length == 0){
+                        const record = {
+                            encodeTaskId: mongoose.Types.ObjectId(encodeTaskId),
+                            code: [""]
+                        }
+                        data.result.push(record);
+                        data.history[0].code = [""]
+                        data.history[1].code = [""]
+                    }
+                    data.userId = mongoose.Types.ObjectId(data.userId)
+                    data.fileId = mongoose.Types.ObjectId(data.fileId)
+                    data.history.forEach(each => {
+                        each.userId = mongoose.Types.ObjectId(each.userId)
+                        each.encodeTaskId = mongoose.Types.ObjectId(each.encodeTaskId)
                     })
-                }
-            )
+                    data.result.forEach(each => {
+                        each.encodeTaskId = mongoose.Types.ObjectId(each.encodeTaskId)
+                    })
+                    data.save()
+                })
+                encodeTask.save().then(
+                    task => {
+                        res.send(task);
+                    }
+                ).catch(
+                    err => {
+                        console.log(err);
+                        res.status(500).send({
+                            EncodeTask: err || "Some err occur while saving encode task"
+                        })
+                    }
+                )
+            }
         }).catch(
             err => {
+                console.log(err);
                 res.status(500).send({
                     EncodeTask: err || "Some err occur while retrieving encode task"
                 })
             })
 })
+
+function findData(dataId){
+    return DiscussData.findById(dataId).exec();
+}
 
 router.post('/coTag', (req, res) => {
     const { dataId, encodeTaskId, code } = req.body;
