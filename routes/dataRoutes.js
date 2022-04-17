@@ -3,12 +3,15 @@ const DiscussData = require("../models/discussData.model")
 const UserProfile = require("../models/userProfile.model")
 const express = require("express");
 const { disconnect } = require("mongoose");
-const router = express.Router()
+const router = express.Router();
+const url = require('url');
 const mongoose = require('mongoose');
 
 
 router.get('/userData', async (req, res) => {
-  const { userId, fileId, encodeTaskId } = req.body;
+  const userId = req.query.userId;
+  const fileId = req.query.fileId;
+  const encodeTaskId = req.query.encodeTaskId
   DiscussData.find({ fileId: fileId }).then(
     data => {
       data.forEach(item => {

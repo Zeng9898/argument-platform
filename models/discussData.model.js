@@ -41,6 +41,18 @@ const DiscussData = new Schema({
     type: ObjectId,
     default: "",
   },
+  index: {
+    type: Number
+  },
+  user: {
+    type: String
+  },
+  group: {
+    type: String
+  },
+  time: {
+    type: Date
+  },
   content: {
     type: String,
     default: "",

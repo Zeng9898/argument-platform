@@ -68,6 +68,10 @@ router.post('/', (req, res) => {
                             const newData = new DiscussData({ //將每筆json存入discussData表
                                 fileId: mongoose.Types.ObjectId(fileId),
                                 content: content.content,
+                                index: content.index,
+                                time: content.time,
+                                group: content.group,
+                                user: content.user
                             });
                             // newData.history.push({
                             //   userId:"testUserId",
