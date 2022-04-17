@@ -59,13 +59,15 @@ router.post('/', (req, res) => {
                         fileId = value._id;
                         const wb = xlsx.readFile("./uploads/" + fileName); //讀取xlsx檔案
                         //console.log(wb.SheetNames);
-                        const ws = wb.Sheets[wb.SheetNames[1]];  //讀取workbook中的其中一個sheet
+                        const ws = wb.Sheets[wb.SheetNames[0]];  //讀取workbook中的其中一個sheet
                         //console.log(ws);
                         const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
+                        console.log(wb.Sheets)
+                        console.log(data)
                         data.forEach((content) => {
                             const newData = new DiscussData({ //將每筆json存入discussData表
                                 fileId: mongoose.Types.ObjectId(fileId),
-                                content: content.dataName,
+                                content: content.content,
                             });
                             // newData.history.push({
                             //   userId:"testUserId",
