@@ -20,10 +20,6 @@ const File = new Schema({
     type: String,
     required: true
   },
-  age: {
-    type: Number,
-    required: true
-  },
   headCounts: {
     type: Number,
     required: true
