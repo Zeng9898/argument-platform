@@ -93,69 +93,6 @@ router.post('/', (req, res) => {
                         console.log(value)
                         res.send({ error: value })
                     });
-
-                // UserProfile.findById(userId).then( //找到目標使用者
-                //     user => {
-                //         let FNId; //紀錄存到db後的file id
-                //         let returnValue; //紀錄要丟回前端的檔案資料
-                //         user.files.push({ //把這些資料丟進files array
-                //             fileName: userFileName,
-                //             coCode: coCode,
-                //             codeSys: codeSys
-                //         })
-                //         user.save().then((value) => { //儲存剛剛丟進去的東西
-                //             console.log(value)
-                //             for (let i = 0; i < user.files.length; i++) { //找尋剛剛丟進去那筆檔案的file id
-                //                 if (user.files[i].fileName == userFileName) {
-                //                     FNId = user.files[i]._id;
-                //                     returnValue = user.files[i];
-                //                 }
-                //             }
-                //             const wb = xlsx.readFile("./uploads/" + userFileName); //讀取xlsx檔案
-                //             //console.log(wb.SheetNames);
-                //             const ws = wb.Sheets[wb.SheetNames[1]];  //讀取workbook中的其中一個sheet
-                //             //console.log(ws);
-                //             const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
-                //             data.forEach((item) => {
-                //                 const newData = new DiscussData({ //將每筆json存入discussData表
-                //                     FNId: mongoose.Types.ObjectId(FNId),
-                //                     dataName: item.dataName,
-                //                     history:[
-                //                         {
-                //                             userId: userId,
-                //                             perspective: ['社會', '環保'],
-                //                             purpose: ['提出疑問', '表達支持'],
-                //                             version: ['1'],
-                //                         }
-                //                     ]
-                //                 });
-                //                 // newData.history.push({
-                //                 //   userId:"testUserId",
-
-                //                 // });
-                //                 newData.save() //將每筆資料（一段話）存進discuss data collection
-                //                     .then((value) => {
-                //                         console.log(value)
-                //                     })
-                //                     .catch((err) => {
-                //                         console.log(err);
-                //                         return res.status(500).send(err)
-                //                     });
-                //             })
-                //             res.send(returnValue);
-                //         })
-                //             .catch(value => {
-                //                 console.log(value)
-                //                 return res.send({ error: value })
-                //             });
-                //     }
-                // ).catch((err) => {
-                //     return res.status(500).send({
-                //         user: err || "Some error occurred while retrieving users.",
-                //     });
-                // })
-
-
             }
         });
     }
