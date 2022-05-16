@@ -1,7 +1,6 @@
 const db = require("../models");
 const mongoose = require('mongoose');
 const DiscussData = require("../models/discussData.model");
-const UserProfile = require("../models/userProfile.model")
 const File = require("../models/file.model")
 const { ObjectId } = require("bson");
 

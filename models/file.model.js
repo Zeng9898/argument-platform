@@ -6,35 +6,35 @@ const Schema = mongoose.Schema
 const File = new Schema({
   userId: {
     type: ObjectId,
-    required: true
+    //required: true
   },
   fileName: {
     type: String,
-    required: true
+    //required: true
   },
   collector: {
     type: String,
-    required: true
+    //required: true
   },
   sourceTarget: {
     type: String,
-    required: true
+    //required: true
   },
   headCounts: {
     type: Number,
-    required: true
+    //required: true
   },
   collectDate: {
     type: Date,
-    required: true
+    //required: true
   },
   collectMethod: {
     type: String,
-    required: true
+    //required: true
   },
   context: {
     type: String,
-    required: true
+    //required: true
   },
   createdAt: {
     type: Date,
