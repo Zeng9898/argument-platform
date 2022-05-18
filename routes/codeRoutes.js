@@ -8,7 +8,8 @@ const mongoose = require('mongoose');
 const codeSystems = require("../controllers/codeSystems")
 
 router.post('/codeSystem', codeSystems.createCodeSystem);
-router.put('/saveCodeSystem', codeSystems.saveCodeSystem);
+router.post('/favCodeSystem', codeSystems.saveCodeSystem);
+router.delete('/favCodeSystem', codeSystems.unSaveCodeSystem);
 
 router.post('/encodeTask', (req, res) => {
     const { userId, codeSysId, fileId, startTime, endTime, status, creator } = req.body;

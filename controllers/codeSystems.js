@@ -52,7 +52,37 @@ const saveCodeSystem = (req, res) => {
 }
 
 const unSaveCodeSystem = (req, res) => {
-    
+    const { userId, codeSysId } = req.body;
+    CodeSys.findById(mongoose.Types.ObjectId(codeSysId))
+        .then(codeSys => {
+            for (let i = 0; i < codeSys.favorite.length; i++) {
+                if (codeSys.favorite[i] == userId) {
+                    codeSys.favorite.splice(i, 1)
+                }
+            }
+            codeSys.save()
+                .then(result => {
+                    console.log(result);
+                    return res.status(201).json({
+                        status: true,
+                        message: 'remove favorite code system successfully!'
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    return res.status(404).json({
+                        status: false,
+                        message: `err occur when removing favorite code system ${err}`
+                    })
+                })
+        })
+        .catch(err => {
+            console.log(err)
+            return res.status(404).json({
+                status: false,
+                message: `err occur when finding the code system ${err}`
+            })
+        })
 }
 
-module.exports = { createCodeSystem, saveCodeSystem, unSaveCodeSystem}
+module.exports = { createCodeSystem, saveCodeSystem, unSaveCodeSystem }
