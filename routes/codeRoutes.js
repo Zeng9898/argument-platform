@@ -5,27 +5,10 @@ const EncodeTask = require("../models/encodeTask.model")
 const DiscussData = require("../models/discussData.model")
 const mongoose = require('mongoose');
 
-const controller = require("../controllers/controller")
+const codeSystems = require("../controllers/codeSystems")
 
-router.post('/codeSystem', (req, res) => {
-    const { userId, codeName, purpose, code, source } = req.body;
-    const newCodeSys = new CodeSys({
-        userId: userId,
-        codeName: codeName,
-        purpose: purpose,
-        code: code,
-        source: source
-    });
-    newCodeSys.save()
-        .then((value) => {
-            console.log(value)
-            res.send({ success: "create code system successfully" })
-            //File.findById()
-        }).catch(value => {
-            console.log(value)
-            res.send({ error: value })
-        });
-})
+router.post('/codeSystem', codeSystems.createCodeSystem);
+router.put('/saveCodeSystem', codeSystems.saveCodeSystem);
 
 router.post('/encodeTask', (req, res) => {
     const { userId, codeSysId, fileId, startTime, endTime, status, creator } = req.body;

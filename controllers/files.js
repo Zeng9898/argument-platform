@@ -3,6 +3,7 @@ const { saveFileInfo, saveContent } = require('../utils/files');
 
 const uploadFile = async (req, res) => {
     try {
+        console.log(req.body);
         const session = await mongoose.startSession();
         session.startTransaction();
         const { userId, fileName, collector, sourceTarget,
@@ -43,8 +44,8 @@ const uploadFile = async (req, res) => {
             })
         }
 
-        //await session.commitTransaction();
-        //session.endSession();
+        await session.commitTransaction();
+        session.endSession();
         console.log("6");
         return res.status(201).send(results);
         // ]).then(outcome => {

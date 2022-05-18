@@ -24,6 +24,9 @@ const CodeSys = new Schema({
     type: String,
     required: true
   },
+  favorite: {
+    type: [String]
+  },
   createdAt: {
     type: Date,
     default: Date.now  // 取得當下時間戳記
