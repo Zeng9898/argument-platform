@@ -12,7 +12,7 @@ const fs = require("fs");
 
 
 router.post('/', files.uploadFile
-    
+
     // const { userId, fileName, collector, sourceTarget,
     //     age, headCounts, collectDate, collectMethod, context } = req.body;
     // console.log(req.body)
@@ -83,6 +83,11 @@ router.post('/', files.uploadFile
     //     });
     // }
 );
+
+router.get('/example', (req, res) => {
+    const file = './NLP論證資料範例.xlsx';
+    res.download(file); // Set disposition and send it.
+});
 
 router.get('/', async (req, res) => {
     console.log("in download excel")
