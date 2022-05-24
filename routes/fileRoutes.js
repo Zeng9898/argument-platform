@@ -11,79 +11,8 @@ const fs = require("fs");
 
 
 
-router.post('/', files.uploadFile
-
-    // const { userId, fileName, collector, sourceTarget,
-    //     age, headCounts, collectDate, collectMethod, context } = req.body;
-    // console.log(req.body)
-    // if (req.files) {
-    //     console.log(req.files);
-    //     var file = req.files.file;
-    //     file.mv('./uploads/' + fileName, function (err) { //把檔案移動到/uploads
-    //         if (err) {
-    //             console.log("1")
-    //             console.log(err)
-    //             res.send(err);
-    //         } else {
-    //             let fileId;
-    //             console.log("2")
-    //             const newFile = new File({
-    //                 userId: userId,
-    //                 fileName: fileName,
-    //                 collector: collector,
-    //                 sourceTarget: sourceTarget,
-    //                 age: age,
-    //                 headCounts: headCounts,
-    //                 collectDate: collectDate,
-    //                 collectMethod: collectMethod,
-    //                 context: context
-    //             });
-    //             newFile.save()
-    //                 .then((value) => {
-    //                     console.log("3")
-    //                     console.log(value)
-    //                     fileId = value._id;
-    //                     const wb = xlsx.readFile("./uploads/" + fileName); //讀取xlsx檔案
-    //                     //console.log(wb.SheetNames);
-    //                     const ws = wb.Sheets[wb.SheetNames[0]];  //讀取workbook中的其中一個sheet
-    //                     //console.log(ws);
-    //                     const data = xlsx.utils.sheet_to_json(ws); //用xlsx套件將sheet轉json
-    //                     console.log(wb.Sheets)
-    //                     console.log(data)
-    //                     data.forEach((content) => {
-    //                         const newData = new DiscussData({ //將每筆json存入discussData表
-    //                             fileId: mongoose.Types.ObjectId(fileId),
-    //                             content: content.content,
-    //                             index: content.index,
-    //                             time: content.time,
-    //                             group: content.group,
-    //                             user: content.user
-    //                         });
-    //                         // newData.history.push({
-    //                         //   userId:"testUserId",
-
-    //                         // });
-    //                         newData.save() //將每筆資料（一段話）存進discuss data collection
-    //                             .then((value) => {
-    //                                 console.log(value)
-    //                             })
-    //                             .catch((err) => {
-    //                                 console.log(err);
-    //                                 return res.status(500).send(err)
-    //                             });
-    //                     })
-    //                     res.send({ success: "success upload file" });
-    //                     //File.findById()
-    //                 }).catch(value => {
-    //                     console.log("4")
-    //                     console.log(value)
-    //                     res.send({ error: value })
-    //                 });
-    //         }
-    //     });
-    // }
-);
-
+router.post('/', files.uploadFile);
+router.get('/allfileInfo/:userId', files.allFileInfo);
 router.get('/example', (req, res) => {
     const file = './NLP論證資料範例.xlsx';
     res.download(file); // Set disposition and send it.

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { saveFileInfo, saveContent } = require('../utils/files');
+const File = require("../models/file.model")
 
 const uploadFile = async (req, res) => {
     try {
@@ -76,4 +77,17 @@ const uploadFile = async (req, res) => {
 
 }
 
-module.exports = { uploadFile }
+const allFileInfo = async (req, res) => {
+    const userId = req.params.userId;
+    await File.find({ userId: mongoose.Types.ObjectId(userId) })
+        .then(files => {
+            return res.status(201).send(files);
+        })
+        .catch(err => {
+            console.log("err", err);
+            return res.status(500).send({
+                message: `Unable to find all files. Please try again. \n Error: ${err}`
+            })
+        })
+}
+module.exports = { uploadFile, allFileInfo }
