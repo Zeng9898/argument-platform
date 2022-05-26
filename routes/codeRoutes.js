@@ -10,6 +10,7 @@ const codeSystems = require("../controllers/codeSystems")
 router.post('/codeSystem', codeSystems.createCodeSystem);
 router.post('/favCodeSystem', codeSystems.saveCodeSystem);
 router.delete('/favCodeSystem', codeSystems.unSaveCodeSystem);
+router.get('/favCodeSystem/:userId', codeSystems.findFavCodeSystem);
 
 router.post('/encodeTask', (req, res) => {
     const { userId, codeSysId, fileId, startTime, endTime, status, creator } = req.body;

@@ -78,11 +78,35 @@ const unSaveCodeSystem = (req, res) => {
         })
         .catch(err => {
             console.log(err)
-            return res.status(404).json({
+            return res.status(501).json({
                 status: false,
                 message: `err occur when finding the code system ${err}`
             })
         })
 }
 
-module.exports = { createCodeSystem, saveCodeSystem, unSaveCodeSystem }
+const findFavCodeSystem = async (req, res) => {
+    const userId = req.params.userId;
+    await CodeSys.find({ userId: mongoose.Types.ObjectId(userId) })
+        .then(codeSystems => {
+            let result = [];
+            for (let i = 0; i < codeSystems.length; i++) {
+                for (let k = 0; k < codeSystems[i].favorite.length; k++) {
+                    if (codeSystems[i].favorite[k] == userId) {
+                        result.push(codeSystems[i]);
+                        break;
+                    }
+                }
+            }
+            return res.status(201).send(result);
+        }
+        )
+        .catch(err => {
+            console.log(err)
+            return res.status(501).json({
+                message: `err occur when finding the favorite code system ${err}`
+            })
+        })
+}
+
+module.exports = { createCodeSystem, saveCodeSystem, unSaveCodeSystem, findFavCodeSystem }
