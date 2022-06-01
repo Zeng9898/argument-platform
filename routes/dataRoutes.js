@@ -1,4 +1,3 @@
-const controller = require("../controllers/controller.js");
 const DiscussData = require("../models/discussData.model")
 const express = require("express");
 const { disconnect } = require("mongoose");

@@ -6,12 +6,17 @@ const DiscussData = require("../models/discussData.model")
 const mongoose = require('mongoose');
 
 const codeSystems = require("../controllers/codeSystems")
+const datas = require("../controllers/data")
 
-router.post('/codeSystem', codeSystems.createCodeSystem);
+//新增編碼架構
+router.post('/codeSystem', codeSystems.createCodeSystem); 
+//新增喜愛的編碼架構
 router.post('/favCodeSystem', codeSystems.saveCodeSystem);
+//刪除喜愛的編碼架構
 router.delete('/favCodeSystem', codeSystems.unSaveCodeSystem);
+//查詢某個使用者喜愛的編碼架構
 router.get('/favCodeSystem/:userId', codeSystems.findFavCodeSystem);
-
+//新增一筆編碼任務
 router.post('/encodeTask', (req, res) => {
     const { userId, codeSysId, fileId, startTime, endTime, status, creator } = req.body;
     const coCode = Math.floor(Math.random() * 100000);
@@ -35,61 +40,8 @@ router.post('/encodeTask', (req, res) => {
             res.send({ error: value })
         });
 })
-
-router.post('/tag', (req, res) => {
-    const { dataId, userId, encodeTaskId, code } = req.body;
-    const record = {
-        userId: mongoose.Types.ObjectId(userId),
-        encodeTaskId: mongoose.Types.ObjectId(encodeTaskId),
-        code: code
-    }
-    DiscussData.findById(mongoose.Types.ObjectId(dataId)).then(
-        data => {
-            var index = data.history.findIndex(x => x.userId.equals(mongoose.Types.ObjectId(userId))
-                && x.encodeTaskId.equals(mongoose.Types.ObjectId(encodeTaskId)))
-            if (index != -1) {
-                console.log("exist")
-                data.fileId = mongoose.Types.ObjectId(data.fileId);
-                data.history[index] = record;
-                data.history.forEach(item => {
-                    item.userId = mongoose.Types.ObjectId(item.userId)
-                    item.encodeTaskId = mongoose.Types.ObjectId(item.encodeTaskId)
-                })
-                data.save().then(
-                    result => {
-                        res.send(result)
-                    }
-                ).catch(err => {
-                    return res.status(500).send({
-                        DiscussData: err || "Some error occur when saving discussdata!"
-                    })
-                })
-            } else {
-                console.log("new")
-                data.fileId = mongoose.Types.ObjectId(data.fileId)
-                data.history.push(record);
-                data.history.forEach(item => {
-                    item.userId = mongoose.Types.ObjectId(item.userId)
-                    item.encodeTaskId = mongoose.Types.ObjectId(item.encodeTaskId)
-                })
-                data.save().then(
-                    data => {
-                        res.send(data)
-                    }
-                ).catch((err) => {
-                    return res.status(500).send({
-                        data: err || "Some error occurred while tagging data.",
-                    });
-                })
-            }
-        }
-    ).catch((err) => {
-        return res.status(500).send({
-            DiscussData: err || "Some error occurred while retrieving DiscussData.",
-        });
-    })
-
-})
+//對資料進行標注
+router.post('/tag', datas.tagData)
 
 router.get('/allEncodeTask/:userId', async (req, res) => {
     const userId = req.params.userId
