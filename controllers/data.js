@@ -55,4 +55,26 @@ const tagData = (req, res) => {
     })
 }
 
-module.exports = { tagData }
+const tagPointless = async (req, res) => {
+    const dataId = req.body.dataId;
+    await DiscussData.findOneAndUpdate({ _id: dataId }, { pointless: true }).then(result => {
+        return res.status(201).send(result);
+    }).catch(err => {
+        return res.status(501).json({
+            message: `err occur when saving the pointless column of discuss data ${err}`
+        })
+    });
+}
+
+const unTagPointless = async (req, res) => {
+    const dataId = req.body.dataId;
+    await DiscussData.findOneAndUpdate({ _id: dataId }, { pointless: false }).then(result => {
+        return res.status(201).send(result);
+    }).catch(err => {
+        return res.status(501).json({
+            message: `err occur when saving the pointless data of discuss data ${err}`
+        })
+    });
+}
+
+module.exports = { tagData, tagPointless, unTagPointless }

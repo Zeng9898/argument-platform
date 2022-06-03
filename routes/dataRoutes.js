@@ -1,10 +1,13 @@
 const DiscussData = require("../models/discussData.model")
 const express = require("express");
-const { disconnect } = require("mongoose");
 const router = express.Router();
-const url = require('url');
 const mongoose = require('mongoose');
+const datas = require("../controllers/data")
 
+//將資料標註為不重要
+router.post('/pointless', datas.tagPointless)
+//取消將資料標註為不重要
+router.delete('/pointless', datas.unTagPointless)
 
 router.get('/userData', async (req, res) => {
   const userId = req.query.userId;

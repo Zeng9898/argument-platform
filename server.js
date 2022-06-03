@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(uploader());
 
-const db = require("./models");
+const db = require("./models/index");
 db.mongoose
   .connect(db.uri, {
     useNewUrlParser: true,

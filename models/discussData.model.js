@@ -57,6 +57,10 @@ const DiscussData = new Schema({
     type: String,
     default: "",
   },
+  pointless: {
+    type: Boolean,
+    default: false
+  },
   history: {
     type: [History],
   },
