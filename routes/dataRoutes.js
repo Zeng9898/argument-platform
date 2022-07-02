@@ -23,8 +23,9 @@ router.get('/userData', async (req, res) => {
   )
 })
 
-router.get('/adjustData', async (req, res) => {
-  const { encodeTaskId, fileId } = req.body;
+router.get('/adjustData/:encodeTaskId/:fileId', async (req, res) => {
+  const encodeTaskId = req.params.encodeTaskId;
+  const fileId = req.params.fileId;
   const discussData = await DiscussData.aggregate([
     {
       $match:
